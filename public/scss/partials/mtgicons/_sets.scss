@@ -1,0 +1,94 @@
+.u:after {
+	@extend .uncommon:after;
+}
+.r:after {
+	@extend .rare:after;
+}
+.m:after {
+	@extend .rare:after;
+}
+
+@for $i from 10 through 15 {
+	.set-M#{$i}, .set-M#{$i}:before{
+		@extend .m#{$i};
+	}
+}
+
+.set-4ED, .set-4ED:before{
+	@extend .fourth;
+}
+.set-5ED, .set-5ED:before{
+	@extend .fifth;
+}
+.set-6ED, .set-6ED:before{
+	@extend .sixth;
+}
+.set-7ED, .set-7ED:before{
+	@extend .seventh;
+}
+.set-8ED, .set-8ED:before{
+	@extend .eighth;
+}
+.set-9ED, .set-9ED:before {
+	@extend .ninth;
+}
+.set-10E, .set-10E:before{
+	@extend .tenth;
+}
+.set-ALL, .set-ALL:before{
+	@extend  .alliances;
+}
+.set-TMP, .set-TMP:before{
+	@extend .tempest;
+}
+.set-ICE, .set-ICE:before{
+	@extend .ice-age;
+}
+.set-ONS, .set-ONS:before{
+	@extend .onslaught;
+}
+.set-FEM, .set-FEM:before{
+	@extend .fallen-empires;
+}
+.set-POR, .set-POR:before{
+	@extend .portal;
+}
+.set-ME2, .set-ME2:before{
+	@extend  .masters-edition-2;
+}
+.set-USG, .set-USG:before{
+	@extend .urzas-saga;
+}
+.set-EXO, .set-EXO:before{
+	@extend .exodus;
+}
+.set-INV, .set-INV:before{
+	@extend .invasion;
+}
+.set-MOR, .set-MOR:before{
+	@extend .morningtide;
+}
+.set-LGN, .set-LGN:before{
+	@extend .legions;
+}
+.set-SCG, .set-SCG:before{
+	@extend .scourge;
+}
+.set-RAV, .set-RAV:before{
+	@extend .ravnica;
+}
+.set-LRW, .set-LRW:before{
+	@extend .lorwyn;
+}
+.set-SHM, .set-SHM:before{
+	@extend .shadowmoor;
+}
+.set-ALA, .set-ALA:before{
+	@extend .shards-of-alara;
+}
+.set-UDS, .set-UDS:before{
+	@extend .urzas-destiny;
+}
+.set-UDS:after{
+	margin-left: -0.9em;
+}

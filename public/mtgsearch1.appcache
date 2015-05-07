@@ -1,0 +1,27 @@
+CACHE MANIFEST
+# 2014-12-12 v2.1.0
+index.html
+js/min/app.js
+js/min/script.js
+css/style.css
+img/black.png
+img/favicon.png
+img/google.png
+img/gray.png
+img/loggo.png
+img/loggo1.png
+img/MTG_BlackandWhitebk.png
+fonts/FontAwesome.otf
+fonts/fontawesome-webfont.eot
+fonts/fontawesome-webfont.svg
+fonts/fontawesome-webfont.ttf
+fonts/fontawesome-webfont.woff
+fonts/bootstrap/glyphicons-halflings-regular.eot
+fonts/bootstrap/glyphicons-halflings-regular.svg
+fonts/bootstrap/glyphicons-halflings-regular.ttf
+fonts/bootstrap/glyphicons-halflings-regular.woff
+fonts/fontawesome-webfont.woff?v=4.2.0
+fonts/fontawesome-webfont.ttf?v=4.2.0
+
+NETWORK:
+*

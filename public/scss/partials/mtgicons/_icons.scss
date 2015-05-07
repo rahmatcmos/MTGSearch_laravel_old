@@ -1,0 +1,36 @@
+.icon-G,.icon-G:before{
+	@extend .mana-g;
+}
+.icon-R,.icon-R:before{
+	@extend  .mana-r;
+}
+.icon-U,.icon-U:before{
+	@extend  .mana-u;
+}
+.icon-W,.icon-W:before{
+	@extend  .mana-w;
+}
+.icon-B,.icon-B:before{
+	@extend  .mana-b;
+}
+.icon-S,.icon-S:before{
+	@extend  .mana-snow;
+}
+
+.icon-T, .icon-T:before{
+	@extend .tap;
+}
+.icon-Y, .icon-Y:before{
+	@extend .mana-y;
+}
+.icon-X, .icon-X:before{
+	@extend .mana-x;
+}
+.icon-Z, .icon-Z:before{
+	@extend .mana-z;
+}
+@for $i from 0 through 21 {
+	.icon-#{$i}, .icon-#{$i}:before{
+		@extend .mana-#{$i};
+	}
+}

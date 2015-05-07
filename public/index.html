@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html ng-app="MTGFinder">
+<!--<html ng-app="MTGFinder"  manifest="mtgsearch1.appcache">-->
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>MTGSearch</title>
+	<link rel="stylesheet" href="css/style.css"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="img/favicon.png">
+</head>
+<body ng-controller="HomeCtrl">
+<div id="wrapper" class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="text-center">
+				<a href="" ng-click="hideCard()"><img src="img/loggo1.png" alt="mtgSearchs logotype"/></a>
+			</div>
+		</div>
+		<div class="col-xs-12" ng-controller="AlertsCtrl">
+			<div ng-repeat="(key,val) in alerts" class="alert {{key}}">
+				<div class="text-center">
+					{{val}}
+					<button ng-click="clearAlerts()" type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div ng-show="selectedCard.length <= 0 && !unusable">
+			<div class="col-xs-12">
+				<input class="form-control text-center" type="text" placeholder="Search for card..." ng-model="search"/>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<h3 class="text-center">Search Result</h3>
+				<ul ng-show="(Cards | filter:search).length>0 && search != '' && search != undefined">
+					<li ng-show="search" class="animated rollIn" ng-repeat="Card in Cards | filter:search | startFrom:currentPage*pageSize | limitTo:pageSize">
+						{{Card}}
+						<a href="" ng-hide="isChoosen(Card) || Loading(Card)" ng-click="getCard(Card)" class="AddCard pull-right"><i class="fa fa-plus"></i></a>
+					</li>
+					<li ng-hide="filtered.length < 10">
+						<!-- hämtad från http://jsfiddle.net/2ZzZB/56/ -->
+						<div class="row">
+							<div class="col-xs-2">
+								<a href="" class="btn pull-left" ng-disabled="currentPage <= 0" ng-click="currentPage=currentPage-1">
+									Previous
+								</a>
+							</div>
+							<div class="col-xs-8 text-center">
+								{{currentPage+1}}/{{numberOfPages}}
+							</div>
+							<div class="col-xs-2">
+								<a href="" class="btn pull-right" ng-disabled="currentPage+1 >= numberOfPages" ng-click="currentPage=currentPage+1">
+									Next
+								</a>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<ul ng-show="(Cards | filter:search).length<=0 || search == '' || search == undefined">
+					<li>You have no search result or have not been doing any search jet.</li>
+				</ul>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<h3 class="text-center">Your choosen cards</h3>
+				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+					<div class="panel panel-default animated fadeIn" ng-repeat="Card in choosenCards">
+						<div class="panel-heading" role="tab" id="header{{Card.multiverseid}}">
+							<h4 class="panel-title">
+								<a href="" class="collapsed" data-toggle="collapse" data-target="#collapse{{Card.multiverseid}}" aria-expanded="false" aria-controls="collapse{{Card.multiverseid}}">
+									{{Card.name}}
+								</a>
+								<a href="" ng-click="removeCard(Card.name)" class="pull-right RemoveCard"><i class="fa fa-minus"></i></a>
+							</h4>
+						</div>
+						<div id="collapse{{Card.multiverseid}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="header{{Card.multiverseid}}">
+							<div class="panel-body">
+								<p ng-hide="offline" cardtext="{{Card.text}}"></p>
+								<p ng-show="offline" offlinecardtext="{{Card.text}}"></p>
+								<p class="text-right"><a href="" ng-click="DisplayCard(Card.name)">Learn more</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default animated" ng-class="{bounceInRight: cardLoading.length > 0}" ng-show="cardLoading.length > 0">
+						<div class="panel-heading" role="tab" id="headingLoading">
+							<h4 class="panel-title text-center">
+								<a href=""><i class="fa fa-spin fa-spinner"></i> Loading Card/Cards <i class="fa fa-spin fa-spinner"></i></a>
+							</h4>
+						</div>
+					</div>
+				</div>
+				<ul ng-show="choosenCards.length<=0 && cardLoading.length<= 0">
+					<li>You have no choosen cards or have not choose any card yet.</li>
+				</ul>
+			</div>
+		</div>
+		<div ng-show="selectedCard.length > 0 && !unusable" ng-repeat="Card in selectedCard">
+			<div class="col-xs-12">
+				<div class="row">
+					<div ng-hide="offline" class="col-xs-12 col-sm-3">
+						<div id="card-carousel" class="carousel slide" data-ride="carousel">
+							<div class="carousel-inner" role="listbox">
+								<div ng-repeat="image in Card.images" class="item text-center" ng-class="{active: $index === 0}">
+									<img width="70%" alt="Image on card with mulitverse id {{image.image}}" ng-src="https://api.mtgdb.info/content/card_images/{{image.image}}.jpeg">
+									<div class="carousel-caption">
+										{{image.artist}} <span ng-hide="image.releasedAt === ''">-</span> {{image.releasedAt}}
+									</div>
+								</div>
+							</div>
+							<ol ng-hide="Card.images.length === 1" class="carousel-indicators">
+								<li ng-repeat="image in Card.images" data-target="#card-carousel" data-slide-to="{{$index}}" ng-class="{active: $index === 0}"></li>
+							</ol>
+							<a href="" ng-hide="Card.images.length === 1" class="left carousel-control" data-target="#card-carousel" role="button" data-slide="prev">
+								<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+								<span class="sr-only">Previous</span>
+							</a>
+							<a href="" ng-hide="Card.images.length === 1" class="right carousel-control" data-target="#card-carousel" role="button" data-slide="next">
+								<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+								<span class="sr-only">Next</span>
+							</a>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6" ng-class="{'col-sm-7 col-sm-offset-1': offline}">
+						<div class="row">
+							<div class="col-xs-12 col-sm-8">
+								<h2>{{Card.name}}</h2>
+							</div>
+							<div class="col-xs-12 col-sm-4 text-right">
+								<span ng-repeat="costToken in Card.cost track by $index" class="costImage mtg icon-{{costToken}}"></span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<p class="big">
+									{{Card.type}}
+									<span ng-hide="Card.subtype === ''">-</span>
+									{{Card.subtype}}
+								</p>
+							</div>
+							<div class="col-xs-12 col-sm-6 text-right">
+								<span ng-repeat="edtion in Card.edtions" class="edtionImage mtg set-{{edtion.set_id}} {{edtion.rarity}}"></span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p cardtext="{{Card.text}}"></p>
+								<p class="italic">{{Card.flavor}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 text-right">
+								<p class="bold big">
+									<span ng-hide="Card.power + Card.toughness === 0">{{Card.power}}/{{Card.toughness}}</span>
+									<span ng-hide="Card.loyalty === 0">{{Card.loyalty}}</span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-3">
+						<h4 class="text-center">Formats legality</h4>
+						<table id="legalityTable">
+							<thead>
+							<tr>
+								<th>Format</th>
+								<th>Legality</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="(key, value) in Card.formats">
+								<td> {{key}} </td> <td> {{ value }} </td>
+							</tr>
+							</tbody>
+							<tfoot>
+							<tr>
+								<th>Format</th>
+								<th>Legality</th>
+							</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-8 text-center">
+				<p class="menu">
+					<a href="" data-toggle="modal" data-target="#termOfUse">Term of Use</a>
+					|
+					<a href="" data-toggle="modal" data-target="#contactUs">Contact Us</a>
+				</p>
+				<p class="copyright">© 2014 David Southmountain. All Rights Reserved.</p>
+			</div>
+			<div class="col-xs-12 col-sm-4 text-center">
+				<a target="_blank" href="http://magic.wizards.com/">
+					<img src="img/MTG_BlackandWhitebk.png" alt="Wizards logotype"/>
+					<p class="copyright">All pictures except logotype are produced by Wizards</p>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="contactUs">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title text-center">Contact Us</h4>
+			</div>
+			<div class="modal-body">
+				<p><span class="bold">Name:</span> David Söderberg</p>
+				<p><span class="bold">Email:</span> <a href="mailto:info@mtgsearch.davidsouthmountain.se">info@mtgsearch.davidsouthmountain.se</a></p>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" id="termOfUse">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title text-center">Term Of Use</h4>
+			</div>
+			<div class="modal-body">
+				<h4>1. Terms</h4>
+				<p>By accessing this web site, you are agreeing to be bound by these
+					web site Terms and Conditions of Use, all applicable laws and regulations,
+					and agree that you are responsible for compliance with any applicable local
+					laws. If you do not agree with any of these terms, you are prohibited from
+					using or accessing this site. The materials contained in this web site are
+					protected by applicable copyright and trade mark law.</p>
+				<h4>2. Use License</h4>
+				<ol type="a">
+					<li>Permission is granted to temporarily download one copy of the materials
+						(information or software) on MTGSearch’s web site for personal,
+						non-commercial transitory viewing only. This is the grant of a license,
+						not a transfer of title, and under this license you may not:<br />
+						<ol type="i">
+							<li>modify or copy the materials;</li>
+							<li>use the materials for any commercial purpose, or for any public display (commercial or non-commercial);</li>
+							<li>attempt to decompile or reverse engineer any software contained on MTGSearch’s web site;</li>
+							<li>remove any copyright or other proprietary notations from the materials; or</li>
+							<li>transfer the materials to another person or “mirror” the materials on any other server.</li>
+						</ol>
+					</li>
+					<li>This license shall automatically terminate if you violate any of these restrictions and may be terminated by MTGSearch at any time. Upon terminating your viewing of these materials or upon the termination of this license, you must destroy any downloaded materials in your possession whether in electronic or printed format.</li>
+				</ol>
+				<h4>3. Disclaimer</h4>
+				<ol type="a">
+					<li>The materials on MTGSearch’s web site are provided “as is”. MTGSearch makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights. Further, MTGSearch does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its Internet web site or otherwise relating to such materials or on any sites linked to this site.</li>
+				</ol>
+				<h4>4. Limitations</h4>
+				<p>In no event shall MTGSearch or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption,) arising out of the use or inability to use the materials on MTGSearch’s Internet site, even if MTGSearch or a MTGSearch authorized representative has been notified orally or in writing of the possibility of such damage. Because some jurisdictions do not allow limitations on implied warranties, or limitations of liability for consequential or incidental damages, these limitations may not apply to you.</p>
+				<h4>5. Revisions and Errata</h4>
+				<p>The materials appearing on MTGSearch’s web site could include technical, typographical, or photographic errors. MTGSearch does not warrant that any of the materials on its web site are accurate, complete, or current. MTGSearch may make changes to the materials contained on its web site at any time without notice. MTGSearch does not, however, make any commitment to update the materials.</p>
+				<h4>6. Links</h4>
+				<p>MTGSearch has not reviewed all of the sites linked to its Internet web site and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by MTGSearch of the site. Use of any such linked web site is at the user’s own risk.</p>
+				<h4>7. Site Terms of Use Modifications</h4>
+				<p>MTGSearch may revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.</p>
+				<h4>8. Governing Law</h4>
+				<p>Any claim relating to MTGSearch’s web site shall be governed by the laws of Sweden without regard to its conflict of law provisions.</p>
+				<p>General Terms and Conditions applicable to Use of a Web Site.</p>
+				<h4>9. Privacy Policy</h4>
+				<p>Your privacy is very important to us. Accordingly, we have developed this Policy in order for you to understand how we collect, use, communicate and disclose and make use of personal information. The following outlines our privacy policy.</p>
+				<ul>
+					<li>Before or at the time of collecting personal information, we will identify the purposes for which information is being collected.</li>
+					<li>We will collect and use of personal information solely with the objective of fulfilling those purposes specified by us and for other compatible purposes, unless we obtain the consent of the individual concerned or as required by law.</li>
+					<li>We will only retain personal information as long as necessary for the fulfillment of those purposes.</li>
+					<li>We will collect personal information by lawful and fair means and, where appropriate, with the knowledge or consent of the individual concerned.</li>
+					<li>Personal data should be relevant to the purposes for which it is to be used, and, to the extent necessary for those purposes, should be accurate, complete, and up-to-date.</li>
+					<li>We will protect personal information by reasonable security safeguards against loss or theft, as well as unauthorized access, disclosure, copying, use or modification.</li>
+					<li>We will make readily available to customers information about our policies and practices relating to the management of personal information.</li>
+				</ul>
+				<p>We are committed to conducting our business in accordance with these principles in order to ensure that the confidentiality of personal information is protected and maintained.</p>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script src="js/min/app.js"></script>
+<script src="js/min/script.js"></script>
+</body>
+</html>

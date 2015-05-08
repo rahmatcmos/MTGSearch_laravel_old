@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserTabel extends Migration {
+class CreateSupertypeTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,10 @@ class CreateUserTabel extends Migration {
 	 */
 	public function up()
 	{
-		//
+		Schema::create('supertypes', function(Blueprint $table){
+			$table->increments('id');
+			$table->string('supertype')->unique();
+		});
 	}
 
 	/**
@@ -22,7 +25,7 @@ class CreateUserTabel extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::drop('supertypes');
 	}
 
 }

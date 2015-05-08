@@ -1,16 +1,16 @@
 var gulp = require('gulp');
-var jqueryVendor = ['js/vendor/jquery.js', 'js/vendor/bootstrap.js'];
-var jqueryWatch = ['js/script.js'];
+var jqueryVendor = ['public/js/vendor/jquery.js', 'public/js/vendor/bootstrap.js'];
+var jqueryWatch = ['public/js/script.js'];
 var jquerySource = jqueryVendor.concat(jqueryWatch);
-var scss = ['scss/style.scss', 'scss/partials/*.scss'];
+var scss = ['public/scss/style.scss', 'public/scss/partials/*.scss'];
 var angularVendor = [
-	'js/vendor/angular.min.js',
-	'js/vendor/ngStorage.js'
+	'public/js/vendor/angular.min.js',
+	'public/js/vendor/ngStorage.js'
 ];
 var angularWatch = [
-	'js/app.js',
-	'js/controllers/*.js',
-	'js/services/*.js'
+	'public/js/app.js',
+	'public/js/controllers/*.js',
+	'public/js/services/*.js'
 ];
 var angularSource = angularVendor.concat(angularWatch);
 
@@ -49,12 +49,12 @@ gulp.task('js', function () {
     return gulp.src(jquerySource)
         .pipe(uglify({mangle: false}))
 		.pipe(rename('script.js'))
-        .pipe(gulp.dest('js/min'));
+        .pipe(gulp.dest('public/js/min'));
 });
 
 gulp.task('angular', function () {
 	return gulp.src(angularSource)
 		.pipe(uglify({mangle: false}))
 		.pipe(rename('app.js'))
-		.pipe(gulp.dest('js/min'));
+		.pipe(gulp.dest('public/js/min'));
 });

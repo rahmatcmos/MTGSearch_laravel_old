@@ -44,4 +44,9 @@ class Model extends BaseModel {
 			return false;
 		}
 	}
+
+	public static function getTableName()
+	{
+		return with(new static)->getTable();
+	}
 }

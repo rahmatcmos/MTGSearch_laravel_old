@@ -15,12 +15,12 @@ class CreateCardTable extends Migration {
 		Schema::create('cards', function(Blueprint $table){
 			$table->increments('id');
 			$table->string('name');
-			$table->integer('cms');
+			$table->integer('cms')->default(0);
 			$table->string('cost');
 			$table->text('text');
-			$table->integer('power');
-			$table->integer('toughness');
-			$table->integer('loyalty');
+			$table->integer('power')->default(0);
+			$table->integer('toughness')->default(0);
+			$table->integer('loyalty')->default(0);
 		});
 	}
 

@@ -18,9 +18,9 @@ class CreateEditionTable extends Migration {
 			$table->string('rarity');
 			$table->string('artist');
 			$table->text('flavor');
-			$table->integer('number');
+			$table->integer('number')->default(0);
 			$table->string('layout');
-			$table->dateTime('released')->nullable();
+			$table->date('released')->nullable();
 			$table->string('code');
 			$table->integer('card_id');
 		});

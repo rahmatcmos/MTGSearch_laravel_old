@@ -9,6 +9,7 @@ class RepositoriesServiceProvider extends ServiceProvider {
 		$this->app->bind('App\Repositories\Type\TypeRepository', 'App\Repositories\Type\EloquentTypeRepository');
 		$this->app->bind('App\Repositories\Subtype\SubtypeRepository', 'App\Repositories\Subtype\EloquentSubtypeRepository');
 		$this->app->bind('App\Repositories\Supertype\SupertypeRepository', 'App\Repositories\Supertype\EloquentSupertypeRepository');
+		$this->app->bind('App\Repositories\Color\ColorRepository', 'App\Repositories\Color\EloquentColorRepository');
 	}
 
 }

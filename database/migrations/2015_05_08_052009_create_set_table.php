@@ -16,8 +16,17 @@ class CreateSetTable extends Migration {
 			$table->primary('code');
 			$table->string('code')->unique();
 			$table->string('name');
-			$table->string('border');
-			$table->string('type');
+			$table->text('description')->nullable();
+			$table->string('block')->nullable();
+			$table->string('border')->nullable();
+			$table->string('type')->nullable();
+			$table->integer("common")->default(0);
+    		$table->integer("uncommon")->default(0);
+    		$table->integer("rare")->default(0);
+    		$table->integer("mythicRare")->default(0);
+    		$table->integer("basicLand")->default(0);
+    		$table->integer("total")->default(0);
+			$table->date('released')->nullable();
 		});
 	}
 

@@ -9,13 +9,25 @@ class Set extends Model {
 	 */
 	protected $table = 'sets';
 
+	public $timestamps = false;
+
 	protected $fillable = array('code', 'name', 'border', 'type');
 
+	// Empty fields is there because of Repository method "insertData".
 	public static $rules = array(
-		'code' => 'required|size:3',
+		'code' => 'required',
 		'name'  => 'required',
-		'border' => 'required',
-		'type' => 'required'
+		'type' => 'required',
+		'border' => '',
+		'description' => '',
+		'block' => '',
+		"common" => '',
+		"uncommon" => '',
+		"rare" => '',
+		"mythicRare" => '',
+		"basicLand" => '',
+		"total" => '',
+		'released' => ''
 	);
 
 }

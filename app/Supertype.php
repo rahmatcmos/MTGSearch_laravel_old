@@ -11,6 +11,8 @@ class Supertype extends Model {
 
 	protected $fillable = array('supertype');
 
+	public $timestamps = false;
+
 	public static $rules = array(
 		'supertype' => 'required'
 	);

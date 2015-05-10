@@ -11,6 +11,8 @@ class Subtype extends Model {
 
 	protected $fillable = array('subtype');
 
+	public $timestamps = false;
+
 	public static $rules = array(
 		'subtype' => 'required'
 	);

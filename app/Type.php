@@ -11,6 +11,8 @@ class Type extends Model {
 
 	protected $fillable = array('type');
 
+	public $timestamps = false;
+
 	public static $rules = array(
 		'type' => 'required'
 	);
